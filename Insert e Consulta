@@ -1,0 +1,125 @@
+-- ==========================
+-- INSERTS - USUÁRIOS
+-- ==========================
+INSERT INTO usuarios (cpf, email, senha, tipo)
+VALUES ('12345678901', 'joao@email.com', '123456', 'aluno');
+
+INSERT INTO usuarios (cpf, email, senha, tipo)
+VALUES ('98765432100', 'maria@email.com', 'abcdef', 'aluno');
+
+INSERT INTO usuarios (cpf, email, senha, tipo)
+VALUES ('11122233344', 'admin@biblioteca.com', 'admin123', 'admin');
+
+-- ==========================
+-- INSERTS - LIVROS
+-- ==========================
+INSERT INTO livros (titulo, autor, ano_publicacao, descricao, imagem, disponivel)
+VALUES (
+    'Dom Casmurro',
+    'Machado de Assis',
+    1899,
+    'Romance clássico da literatura brasileira.',
+    'domcasmurro.jpg',
+    1
+);
+
+INSERT INTO livros (titulo, autor, ano_publicacao, descricao, imagem, disponivel)
+VALUES (
+    'O Hobbit',
+    'J.R.R. Tolkien',
+    1937,
+    'Livro de fantasia e aventura.',
+    'hobbit.jpg',
+    1
+);
+
+INSERT INTO livros (titulo, autor, ano_publicacao, descricao, imagem, disponivel)
+VALUES (
+    '1984',
+    'George Orwell',
+    1949,
+    'Distopia política famosa.',
+    '1984.jpg',
+    0
+);
+
+-- ==========================
+-- INSERTS - ALUGUÉIS
+-- ==========================
+INSERT INTO alugueis (
+    id_livro,
+    id_usuario,
+    data_devolucao,
+    status
+)
+VALUES (
+    1,
+    1,
+    TO_DATE('2026-05-20', 'YYYY-MM-DD'),
+    'alugado'
+);
+
+INSERT INTO alugueis (
+    id_livro,
+    id_usuario,
+    data_devolucao,
+    status
+)
+VALUES (
+    2,
+    2,
+    TO_DATE('2026-05-18', 'YYYY-MM-DD'),
+    'alugado'
+);
+
+INSERT INTO alugueis (
+    id_livro,
+    id_usuario,
+    data_devolucao,
+    status
+)
+VALUES (
+    3,
+    1,
+    TO_DATE('2026-04-30', 'YYYY-MM-DD'),
+    'devolvido'
+);
+
+-- =====================================================
+-- CONSULTA 1
+-- LISTAR LIVROS ALUGADOS COM NOME DO USUÁRIO
+-- =====================================================
+SELECT
+    u.email AS usuario,
+    l.titulo AS livro,
+    a.data_pedido,
+    a.data_devolucao,
+    a.status
+FROM alugueis a
+INNER JOIN usuarios u
+    ON a.id_usuario = u.id
+INNER JOIN livros l
+    ON a.id_livro = l.id;
+
+-- =====================================================
+-- CONSULTA 2
+-- MOSTRAR APENAS LIVROS DISPONÍVEIS
+-- =====================================================
+SELECT
+    titulo,
+    autor,
+    ano_publicacao
+FROM livros
+WHERE disponivel = 1;
+
+-- =====================================================
+-- CONSULTA 3
+-- QUANTIDADE DE LIVROS ALUGADOS POR USUÁRIO
+-- =====================================================
+SELECT
+    u.email,
+    COUNT(a.id) AS quantidade_alugueis
+FROM usuarios u
+LEFT JOIN alugueis a
+    ON u.id = a.id_usuario
+GROUP BY u.email;
